@@ -1,0 +1,130 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Monthly link-rot check, 1st of each month at 07:00 UTC
+    - cron: "0 7 1 * *"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate JSON catalog
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate data/databases.json
+        run: |
+          python - <<'EOF'
+          import json, re, sys
+          from collections import Counter
+          from pathlib import Path
+
+          data = json.loads(Path("data/databases.json").read_text())
+          assert isinstance(data, list) and data, "databases.json must be a non-empty list"
+
+          required = {"name", "description", "license", "category", "repo",
+                      "homepage", "official_site", "stars", "verified",
+                      "unverified_reason"}
+          # URLs legitimately shared by distinct entries (same upstream).
+          # Add entries here with a comment, never silently.
+          SHARED_URLS = {"https://dgraph.io"}  # BadgerDB + Dgraph (both Dgraph projects)
+
+          names, seen_urls, errors = set(), {}, []
+          for i, e in enumerate(data):
+              missing = required - set(e)
+              if missing:
+                  errors.append(f"[{i}] missing keys: {sorted(missing)}")
+              name = e.get("name", "")
+              if name in names:
+                  errors.append(f"[{i}] duplicate name: {name!r}")
+              names.add(name)
+              if not e.get("homepage") or not re.match(r"^https?://", e["homepage"]):
+                  errors.append(f"[{i}] {name!r}: homepage must be an http(s) URL")
+              entry_urls = {u for k in ("homepage", "repo", "official_site")
+                            if (u := e.get(k))}
+              for u in entry_urls:
+                  if u in seen_urls and u not in SHARED_URLS:
+                      errors.append(f"[{i}] {name!r}: URL already used by "
+                                    f"{seen_urls[u]!r}: {u}")
+                  seen_urls.setdefault(u, name)
+              if not e.get("verified") and not e.get("unverified_reason"):
+                  errors.append(f"[{i}] {name!r}: unverified without unverified_reason")
+              if e.get("verified") and e.get("unverified_reason"):
+                  errors.append(f"[{i}] {name!r}: verified but has unverified_reason")
+
+          readme = Path("README.md").read_text()
+
+          # Scope the bullet cross-check to the catalog sections
+          start = readme.index("## Relational")
+          end = readme.index("## Notable exclusions")
+          catalog = readme[start:end]
+
+          # JSON -> README: every entry must have a bullet
+          for e in data:
+              if f"[{e['name']}](" not in catalog:
+                  errors.append(f"README catalog missing bullet for {e['name']!r}")
+
+          # README -> JSON: every catalog bullet must map to an entry
+          for m in re.finditer(r"^- \[([^\]]+)\]\(", catalog, re.M):
+              if m.group(1) not in names:
+                  errors.append(f"README bullet has no JSON entry: {m.group(1)!r}")
+
+          # Section counts must match JSON
+          cats = Counter(e["category"] for e in data)
+          for (title, cat) in [
+                  ("Relational", "relational"),
+                  ("Distributed SQL", "distributed-sql"),
+                  ("Document", "document"),
+                  ("Key-Value", "key-value"),
+                  ("Wide-Column", "wide-column"),
+                  ("Graph", "graph"),
+                  ("Time-Series", "time-series"),
+                  ("Vector", "vector"),
+                  ("Search", "search"),
+                  ("OLAP & Analytical", "olap")]:
+              n = cats[cat]
+              if f"## {title}" not in readme:
+                  errors.append(f"README missing section header: {title!r}")
+              if f"({n} entries)" not in readme:
+                  errors.append(f"README count mismatch for {title!r}: expected {n}")
+
+          # TOC anchors must match GitHub's slugger exactly:
+          # lowercase, strip punctuation (keep word chars, hyphens, spaces),
+          # then map EACH whitespace char to one hyphen (re.sub(r"\s", "-"),
+          # NOT \s+ which wrongly collapses). So "&" headings anchor with
+          # double hyphens, e.g. "OLAP & Analytical" -> #olap--analytical.
+          def slug(t):
+              t = re.sub(r"[^\w\s-]", "", t.lower().strip())
+              return re.sub(r"\s", "-", t)
+          toc = readme[readme.index("## Contents"):readme.index("## Choosing the right database")]
+          headers = re.findall(r"^## (.+)$", readme, re.M)
+          header_slugs = {slug(h) for h in headers}
+          for m in re.finditer(r"\(#[^)]+\)", toc):
+              anchor = m.group(0)[1:-1].lstrip("#")
+              if anchor not in header_slugs:
+                  errors.append(f"TOC anchor has no matching header: {m.group(0)}")
+
+          if errors:
+              print("\n".join(errors))
+              sys.exit(1)
+          print(f"OK: {len(data)} entries, {len(cats)} categories, "
+                f"{sum(1 for e in data if e['verified'])}/{len(data)} verified")
+          EOF
+
+  links:
+    name: Link check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: lycheeverse/lychee-action@v2
+        with:
+          args: --config .lychee.toml --verbose --no-progress './**/*.md'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

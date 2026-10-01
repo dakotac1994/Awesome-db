@@ -1,0 +1,16 @@
+# lychee configuration for Awesome-db
+# Excludes are regexes — domain-bare patterns cover www/subdomains.
+
+exclude = [
+  # Bot-blocking / aggressive anti-automation (added only when CI proves it)
+  "oracle\\.com",
+  "microsoft\\.com",
+  "ibm\\.com",
+  "cloud\\.google\\.com",
+  "snowflake\\.com",
+]
+
+# Be lenient with transient failures but strict about real breakage
+max_retries = 2
+timeout = 20
+accept = [200, 201, 202, 203, 204, 206]
