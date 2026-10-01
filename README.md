@@ -2,13 +2,13 @@
 
 [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Entries](https://img.shields.io/badge/entries-73-blue)](data/databases.json)
+[![Entries](https://img.shields.io/badge/entries-72-blue)](data/databases.json)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A curated list of **database engines and systems**, organized by data model: relational, distributed SQL, document, key-value, wide-column, graph, time-series, vector, search, and OLAP/analytical engines.
 
 > **Scope:** this list covers *database engines* — the software that stores and queries data. Database GUI clients (DBeaver, DataGrip, TablePlus), ORMs (Prisma, SQLAlchemy), migration tools (Flyway, Liquibase), and managed-DBaaS-only wrappers with no self-hostable engine (PlanetScale, Neon, Pinecone) are out of scope.
-> **Honesty policy:** every entry was checked against an official source (project repo, LICENSE file, or official site) as of 2026-09-30 — **73/73 verified**. Unverified entries carry a stated reason. This space relicenses often: non-OSI licenses (SSPL, BSL, source-available, proprietary) are labeled exactly as the project's LICENSE file states, never softened to "open source". Machine-readable data lives in [`data/databases.json`](data/databases.json).
+> **Honesty policy:** every entry was checked against an official source (project repo, LICENSE file, or official site) as of 2026-09-30 — **72/72 verified**. Unverified entries carry a stated reason. This space relicenses often: non-OSI licenses (SSPL, BSL, source-available, proprietary) are labeled exactly as the project's LICENSE file states, never softened to "open source". Machine-readable data lives in [`data/databases.json`](data/databases.json).
 
 ## Contents
 
@@ -60,7 +60,7 @@ Flexible JSON-like documents with secondary indexes — for evolving schemas and
 
 - [Apache CouchDB](https://couchdb.apache.org) — Distributed JSON document store with MVCC and MapReduce views, replicated over HTTP. *(Apache-2.0 · ⭐ 6,967)*
 - [Couchbase Server](https://www.couchbase.com) — Multi-model distributed database with JSON documents, key-value access and SQL++ querying. *(BSL-1.1 · ⭐ 233)*
-- [FerretDB](https://www.ferretdb.com) — Drop-in MongoDB-protocol replacement that stores documents in PostgreSQL or SQLite backends. *(Apache-2.0 · ⭐ 11,089)*
+- [FerretDB](https://docs.ferretdb.io) — Drop-in MongoDB-protocol replacement that stores documents in PostgreSQL or SQLite backends. *(Apache-2.0 · ⭐ 11,089)*
 - [LiteDB](https://www.litedb.org) — Serverless embedded .NET document database in a single DLL file. *(MIT · ⭐ 9,481)*
 - [Marten](https://martendb.io) — .NET transactional document database and event store built on PostgreSQL. *(MIT · ⭐ 3,458)*
 - [MongoDB](https://www.mongodb.com) — Distributed JSON document database with a query API and aggregation pipelines. *(SSPL-1.0 · ⭐ 28,613)*
@@ -91,12 +91,11 @@ Sparse, massively scalable two-dimensional keyspaces for write-heavy workloads a
 
 ## Graph
 
-Nodes, edges, and traversals as first-class citizens — for connected data that joins can't reach. (7 entries)
+Nodes, edges, and traversals as first-class citizens — for connected data that joins can't reach. (6 entries)
 
-- [ArangoDB](https://arangodb.com) — Multi-model database for graphs, documents, and key-values with the AQL query language. *(BSL-1.1 · ⭐ 14,280)*
+- [ArangoDB](https://arango.ai) — Multi-model database for graphs, documents, and key-values with the AQL query language. *(BSL-1.1 · ⭐ 14,280)*
 - [Dgraph](https://dgraph.io) — Distributed native graph database with GraphQL+- and GraphQL query support. *(Apache-2.0 · ⭐ 21,804)*
 - [JanusGraph](https://janusgraph.org) — Distributed graph database over pluggable storage backends, queried with Gremlin. *(Apache-2.0 · ⭐ 5,840)*
-- [Kuzu](https://kuzudb.com) — Embedded graph database with Cypher, built for analytical query speed and scalability. *(MIT · ⭐ 4,024)*
 - [Memgraph](https://memgraph.com) — In-memory graph database with Cypher support for real-time analytics. *(BSL-1.1 · ⭐ 4,586)*
 - [Neo4j](https://neo4j.com) — Property graph database queried with Cypher; the most widely deployed graph DBMS. *(GPL-3.0-only · ⭐ 17,269)*
 - [OrientDB](https://orientdb.dev) — Multi-model database combining graph, document, and object stores with SQL support. *(Apache-2.0 · ⭐ 4,991)*
@@ -110,7 +109,7 @@ Timestamped measurements at high ingest: retention policies, downsampling, and P
 - [InfluxDB](https://www.influxdata.com) — Time-series database with SQL and InfluxQL for metrics, events, and real-time analytics. *(MIT / Apache-2.0 · ⭐ 31,760)*
 - [Prometheus](https://prometheus.io) — Monitoring system and time-series database with the PromQL query language. *(Apache-2.0 · ⭐ 66,330)*
 - [QuestDB](https://questdb.com) — High-performance SQL time-series database for market data and sensor workloads. *(Apache-2.0 · ⭐ 17,402)*
-- [TimescaleDB](https://www.timescale.com) — PostgreSQL extension for time-series with hypertables and continuous aggregates. *(Apache-2.0 + Timescale License · ⭐ 23,629)*
+- [TimescaleDB](https://www.tigerdata.com) — PostgreSQL extension for time-series with hypertables and continuous aggregates. *(Apache-2.0 + Timescale License · ⭐ 23,629)*
 - [VictoriaMetrics](https://victoriametrics.com) — Fast, resource-efficient time-series database and monitoring solution. *(Apache-2.0 · ⭐ 17,795)*
 
 ## Vector
@@ -166,6 +165,7 @@ Candidates that were researched and deliberately left out:
 | Pinecone | Managed-only vector DBaaS; no self-hostable engine. |
 | FaunaDB (Fauna) | Service shut down; no self-hostable engine. |
 | RethinkDB | Development discontinued; project shut down. |
+| Kuzu | Project archived 2025-10-10 after the sponsoring company shut down; kuzudb.com offline. Engine still installs from PyPI but is unmaintained. |
 | TigerGraph | Proprietary closed-source; no public engine repo to verify against. |
 | Realm | Mobile embedded SDK rather than a standalone database engine; Device Sync deprecated. |
 | PouchDB | Embedded in-browser JS library, not a standalone database engine. |

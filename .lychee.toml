@@ -8,6 +8,10 @@ exclude = [
   "ibm\\.com",
   "cloud\\.google\\.com",
   "snowflake\\.com",
+  # Proven by CI failures 2026-09-30: connection resets / 403s / redirect loops
+  "cockroachdb\\.com",
+  "mysql\\.com",
+  "milvus\\.io",
 ]
 
 # Be lenient with transient failures but strict about real breakage

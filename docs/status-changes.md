@@ -4,6 +4,16 @@ Renames, license changes, archival notices, and shutdowns affecting the [Awesome
 
 ## 2026-09-30
 
+Kuzu removed from catalog (archived): the kuzudb/kuzu repo was archived 2025-10-10 after the sponsoring company shut down, and kuzudb.com is offline. Moved to Notable exclusions. Catalog now 72 entries, 72/72 verified.
+
+Rebrands verified and URLs updated:
+- ArangoDB → arango.ai (official site rebranded from arangodb.com).
+- TimescaleDB → tigerdata.com (Timescale rebranded to Tiger Data; product still TimescaleDB).
+
+FerretDB's website (ferretdb.com) returned 404 to automated checks on 2026-09-30 while the project itself is active (repo pushed 2026-06-05); entry now links to the official docs at docs.ferretdb.io.
+
+Lychee exclusions added after CI failures on 2026-09-30: cockroachdb.com (connection resets), mysql.com (403), milvus.io (302 redirect loop) — all bot-detection false positives on live official sites, excluded with domain-bare patterns per AGENTS.md lesson.
+
 Catalog created: 73 entries, 73/73 verified against official sources (repo LICENSE files, official sites/docs). License states below are what each project's LICENSE file said on this date — this space relicenses often, so treat this log as the paper trail.
 
 ### Notable license verdicts at creation
